@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { fetchAdmissionAnalytics } from "../api/analytics";
 
 const useAdmissionAnalytics = () => {
@@ -6,36 +6,52 @@ const useAdmissionAnalytics = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // UI input filters
   const [filters, setFilters] = useState({
     from: "",
     to: "",
   });
 
-  const loadAnalytics = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  // ✅ applied filters (used for API)
+  const [appliedFilters, setAppliedFilters] = useState({
+    from: "",
+    to: "",
+  });
 
+  const loadData = useCallback(async () => {
     try {
-      const response = await fetchAdmissionAnalytics(filters);
-      setData(response);
-    } catch (err) {
-      setError("Failed to load analytics data");
+      setLoading(true);
+      setError(null);
+      const res = await fetchAdmissionAnalytics(appliedFilters);
+      setData(res);
+    } catch {
+      setError("Failed to load analytics");
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, [appliedFilters]);
 
+  // 🔥 Only runs when applied filters change
   useEffect(() => {
-    loadAnalytics();
-  }, [loadAnalytics]);
+    loadData();
+  }, [loadData]);
+
+  const updateFilter = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const applyFilters = () => {
+    setAppliedFilters(filters);
+  };
 
   return {
     data,
     loading,
     error,
     filters,
-    setFilters,
-    refresh: loadAnalytics,
+    updateFilter,
+    applyFilters,
+    refresh: loadData,
   };
 };
 

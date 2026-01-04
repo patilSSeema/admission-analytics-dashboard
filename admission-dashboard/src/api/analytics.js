@@ -11,11 +11,11 @@ const mockData = {
   ],
 
   applicationTrends: [
-    { date: "2025-01-01", count: 120 },
-    { date: "2025-01-02", count: 180 },
-    { date: "2025-01-03", count: 150 },
-    { date: "2025-01-04", count: 220 },
-    { date: "2025-01-05", count: 300 },
+    { date: "2025-09-01", count: 120 },
+    { date: "2025-10-01", count: 180 },
+    { date: "2025-11-01", count: 150 },
+    { date: "2025-12-01", count: 220 },
+    { date: "2026-01-01", count: 300 },
   ],
 };
 
