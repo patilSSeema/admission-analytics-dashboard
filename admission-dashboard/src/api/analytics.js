@@ -1,4 +1,6 @@
-const mockData = {
+import axios from "axios";
+
+export const mockData = {
   totalApplicants: 1250,
   verifiedApplicants: 820,
   rejectedApplicants: 210,
@@ -19,22 +21,17 @@ const mockData = {
   ],
 };
 
-// mock api call
-export const fetchAdmissionAnalytics = ({ from, to } = {}) => {
-  return new Promise((resolve) => {
+export const fetchAdmissionAnalytics = async ({ from, to } = {}) => {
+  // Simulate Axios request
+  const response = await new Promise((resolve) => {
     setTimeout(() => {
-      let trends = mockData.applicationTrends;
-
-      if (from && to) {
-        trends = trends.filter(
-          (item) => item.date >= from && item.date <= to
-        );
-      }
-
-      resolve({
-        ...mockData,
-        applicationTrends: trends,
-      });
+      let trends = [...mockData.applicationTrends];
+      if (from && to)
+        trends = trends.filter(i => i.date >= from && i.date <= to);
+      resolve({ data: { ...mockData, applicationTrends: trends } });
     }, 600);
   });
+
+
+  return response.data;
 };

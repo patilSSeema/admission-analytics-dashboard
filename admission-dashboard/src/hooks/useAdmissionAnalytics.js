@@ -12,17 +12,18 @@ const useAdmissionAnalytics = () => {
     to: "",
   });
 
-  // ✅ applied filters (used for API)
+  // Applied filters used for API
   const [appliedFilters, setAppliedFilters] = useState({
     from: "",
     to: "",
   });
 
-  const loadData = useCallback(async () => {
+  // Function to fetch data
+  const loadData = useCallback(async (filterParams = appliedFilters) => {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetchAdmissionAnalytics(appliedFilters);
+      const res = await fetchAdmissionAnalytics(filterParams);
       setData(res);
     } catch {
       setError("Failed to load analytics");
@@ -31,17 +32,29 @@ const useAdmissionAnalytics = () => {
     }
   }, [appliedFilters]);
 
-  // 🔥 Only runs when applied filters change
+  // Initial load & whenever applied filters change
   useEffect(() => {
     loadData();
   }, [loadData]);
 
+  // Update UI filter inputs
   const updateFilter = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Apply UI filters to API
   const applyFilters = () => {
     setAppliedFilters(filters);
+  };
+
+  // ✅ Refresh like browser refresh
+  const refresh = async () => {
+    // Reset filters
+    setFilters({ from: "", to: "" });
+    setAppliedFilters({ from: "", to: "" });
+
+    // Fetch fresh data ignoring previous filters
+    await loadData({ from: "", to: "" });
   };
 
   return {
@@ -51,7 +64,7 @@ const useAdmissionAnalytics = () => {
     filters,
     updateFilter,
     applyFilters,
-    refresh: loadData,
+    refresh,
   };
 };
 
